@@ -2,34 +2,34 @@ import os
 import tempfile
 import unittest
 
-from app import app, db, Item
+from application import application, db, Item
 
 class LighterpackTestCase(unittest.TestCase):
 
-    db_path = '/'.join([app.root_path, 'test.db'])
-    app.config.update(dict(
+    db_path = '/'.join([application.root_path, 'test.db'])
+    application.config.update(dict(
         SQLALCHEMY_DATABASE_URI = '/'.join(["sqlite://", db_path]),
         WTF_CSRF_ENABLED = False,
         TESTING = True
     ))
 
-    def create_app(self):
-        return app
+    def create_application(self):
+        return application
 
     def setUp(self):
         db.create_all()
-        self.app = app.test_client()
+        self.application = application.test_client()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
 
     def test_empty_db(self):
-        rv = self.app.get('/')
+        rv = self.application.get('/')
         assert b'No entries here so far' in rv.data
 
     def test_add_item(self):
-        rv = self.app.post('/additem', data=dict(
+        rv = self.application.post('/additem', data=dict(
             make = 'ULA',
             model = 'Catalyst',
             color = 'Blue',
