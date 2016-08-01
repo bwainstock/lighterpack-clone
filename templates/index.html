@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block body %}
+
+    <form action="{{ url_for('additem') }}" method=post class=add-item>
+        {{ form.hidden_tag() }}
+      <dl>
+          <dt>{{ form.make.label }}:
+          <dd>{{ form.make }}
+          <dt>{{ form.model.label }}:
+          <dd>{{ form.model }}
+          <dt>{{ form.color.label }}:
+          <dd>{{ form.color }}
+          <dt>{{ form.weight.label }}:
+          <dd>{{ form.weight }}
+          <dt>{{ form.count.label }}:
+          <dd>{{ form.count }}
+          <dt>{{ form.description.label }}:
+          <dd>{{ form.description }}
+          <dd>{{ form.submit }}
+      </dl>
+    </form>
+
+    <ul class=items>
+    {% for item in items %}
+    <li><h2>{{ item.make }} - {{ item.model }}</h2>
+    {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+    {% endfor %}
+    </ul>
+
+
+{% endblock %}
