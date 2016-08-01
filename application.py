@@ -5,15 +5,15 @@ from wtforms import StringField, DecimalField, IntegerField, SubmitField
 from wtforms.validators import DataRequired
 
 
-app = Flask(__name__)
-app.config.update(dict(
-    SQLALCHEMY_DATABASE_URI='/'.join(['sqlite://', app.root_path, 'app.db']),
+application = Flask(__name__)
+application.config.update(dict(
+    SQLALCHEMY_DATABASE_URI='/'.join(['sqlite://', application.root_path, 'application.db']),
     SECRET_KEY='dev key',
     USERNAME='admin',
     PASSWORD='default'
 ))
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(application)
 
 
 class Item(db.Model):
@@ -47,18 +47,18 @@ class ItemForm(Form):
     description = StringField('description', validators=[DataRequired()])
     submit = SubmitField('Add')
 
-@app.cli.command('initdb')
+@application.cli.command('initdb')
 def initdb_command():
     db.create_all()
     print('Initialized db')
 
-@app.route('/')
+@application.route('/')
 def index(errors=None):
     items = Item.query.limit(10)
     form = ItemForm()
     return render_template('index.html', errors=errors, form=form, items=items)
 
-@app.route('/additem', methods=['POST'])
+@application.route('/additem', methods=['POST'])
 def additem():
     
     form = ItemForm()
@@ -80,3 +80,7 @@ def additem():
         #return redirect(url_for('index', error=form.errors))
         flash(' '.join(form.errors))
     return redirect(url_for('index'))
+
+if __name__ == "__main__":
+    db.create_all()
+    application.run()
